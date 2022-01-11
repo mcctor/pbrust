@@ -44,11 +44,14 @@ impl<T: ops::Sub<Output=T>> Sub for Vector2<T> {
     }
 }
 
-impl<T> Neg for Vector2<T> {
+impl<T: Neg<Output=T>> Neg for Vector2<T> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        todo!()
+        Self {
+            x: -self.x,
+            y: -self.y,
+        }
     }
 }
 
@@ -158,7 +161,7 @@ mod test_vector2 {
         let origin = Vector2::from(4.0, 10.0);
         let res = origin / 2.0;
         assert!(res.x == 2.0 && res.y == 5.0)
-      }
+    }
 
     #[test]
     fn scalar_mult() {
@@ -209,11 +212,15 @@ impl<T: ops::Sub<Output=T>> Sub for Vector3<T> {
     }
 }
 
-impl<T> Neg for Vector3<T> {
+impl<T: Neg<Output=T>> Neg for Vector3<T> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        todo!()
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
@@ -338,9 +345,9 @@ mod test_vector3 {
     }
 }
 
-fn abs<T: cmp::PartialOrd + Default + Neg<Output = T>>(value: T) -> T {
+fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(value: T) -> T {
     if value < T::default() {
-        return -value
+        return -value;
     }
     value
 }
