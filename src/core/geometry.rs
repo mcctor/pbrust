@@ -16,20 +16,13 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
     pub fn from(x: T, y: T) -> Vector2<T> {
         Vector2 { x, y }
     }
-
-    pub fn abs(x: &Vector2<T>) -> Vector2<T> {
-        Vector2 { x: abs(x.x), y: abs(x.y) }
-    }
 }
 
 impl<T: ops::Add<Output=T>> Add for Vector2<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
+        Self { x: self.x + rhs.x, y: self.y + rhs.y }
     }
 }
 
@@ -37,21 +30,15 @@ impl<T: ops::Sub<Output=T>> Sub for Vector2<T> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
+        Self { x: self.x - rhs.x, y: self.y - rhs.y }
     }
 }
 
-impl<T: Neg<Output=T>> Neg for Vector2<T> {
+impl<T: ops::Neg<Output=T>> Neg for Vector2<T> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self {
-            x: -self.x,
-            y: -self.y,
-        }
+        Self { x: -self.x, y: -self.y }
     }
 }
 
@@ -59,10 +46,7 @@ impl<T: ops::Mul<Output=T>> Mul for Vector2<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-        }
+        Self { x: self.x * rhs.x, y: self.y * rhs.y }
     }
 }
 
@@ -76,10 +60,7 @@ impl<T: Copy + ops::Mul<Output=T>> Mul<T> for Vector2<T> {
     type Output = Self;
 
     fn mul(self, rhs: T) -> Self::Output {
-        Self {
-            x: self.x * rhs,
-            y: self.y * rhs,
-        }
+        Self { x: self.x * rhs, y: self.y * rhs }
     }
 }
 
@@ -94,10 +75,7 @@ impl<T: Copy + ops::Div<Output=T> + cmp::PartialEq + Default> Div<T> for Vector2
 
     fn div(self, rhs: T) -> Self::Output {
         assert!(rhs != T::default());
-        Self {
-            x: self.x / rhs,
-            y: self.y / rhs,
-        }
+        Self { x: self.x / rhs, y: self.y / rhs }
     }
 }
 
@@ -182,21 +160,13 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
     pub fn from(x: T, y: T, z: T) -> Vector3<T> {
         Vector3 { x, y, z }
     }
-
-    pub fn abs(x: &Vector3<T>) -> Vector3<T> {
-        Vector3 { x: abs(x.x), y: abs(x.y), z: abs(x.z) }
-    }
 }
 
 impl<T: ops::Add<Output=T>> Add for Vector3<T> {
     type Output = Vector3<T>;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
-        }
+        Self { x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
     }
 }
 
@@ -204,11 +174,7 @@ impl<T: ops::Sub<Output=T>> Sub for Vector3<T> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
-        }
+        Self { x: self.x - rhs.x, y: self.y - rhs.y, z: self.z - rhs.z }
     }
 }
 
@@ -216,11 +182,7 @@ impl<T: Neg<Output=T>> Neg for Vector3<T> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Self {
-            x: -self.x,
-            y: -self.y,
-            z: -self.z,
-        }
+        Self { x: -self.x, y: -self.y, z: -self.z }
     }
 }
 
@@ -234,11 +196,7 @@ impl<T: ops::Mul<Output=T>> Mul for Vector3<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-            z: self.z * rhs.z,
-        }
+        Self { x: self.x * rhs.x, y: self.y * rhs.y, z: self.z * rhs.z }
     }
 }
 
@@ -246,11 +204,7 @@ impl<T: Copy + ops::Mul<Output=T>> Mul<T> for Vector3<T> {
     type Output = Self;
 
     fn mul(self, rhs: T) -> Self::Output {
-        Self {
-            x: self.x * rhs,
-            y: self.y * rhs,
-            z: self.z * rhs,
-        }
+        Self { x: self.x * rhs, y: self.y * rhs, z: self.z * rhs }
     }
 }
 
@@ -265,11 +219,7 @@ impl<T: Copy + ops::Div<Output=T> + cmp::PartialEq + Default> Div<T> for Vector3
 
     fn div(self, rhs: T) -> Self::Output {
         assert!(rhs != T::default());
-        Self {
-            x: self.x / rhs,
-            y: self.y / rhs,
-            z: self.z / rhs,
-        }
+        Self { x: self.x / rhs, y: self.y / rhs, z: self.z / rhs }
     }
 }
 
@@ -345,9 +295,37 @@ mod test_vector3 {
     }
 }
 
-fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(value: T) -> T {
-    if value < T::default() {
-        return -value;
+// pub fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(v: Vector3<T>) -> Vector3<T> {
+//     let abs_func = |x: T| {
+//         if x < T::default() {
+//             return -x
+//         }
+//         x
+//     };
+//     Vector3 {
+//         x: abs_func(v.x),
+//         y: abs_func(v.y),
+//         z: abs_func(v.z)
+//     }
+// }
+
+pub fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(v: Vector2<T>) -> Vector2<T> {
+    let abs_func = |x: T| {
+        if x < T::default() {
+            return -x;
+        }
+        x
+    };
+    Vector2 {
+        x: abs_func(v.x),
+        y: abs_func(v.y),
     }
-    value
+}
+
+// pub fn dot<T>(v1: Vector2<T>, v2: Vector2<T>) -> T {
+//     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+// }
+
+pub fn dot<T>(v1: Vector3<T>, v2: Vector3<T>) -> T {
+    v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 }
