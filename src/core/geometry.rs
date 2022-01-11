@@ -6,13 +6,6 @@ pub type Vector2i = Vector2<i32>;
 pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i32>;
 
-fn abs<T: cmp::PartialOrd + Default + Neg<Output = T>>(value: T) -> T {
-    if value < T::default() {
-        return -value
-    }
-    value
-}
-
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Vector2<T> {
     pub x: T,
@@ -343,4 +336,11 @@ mod test_vector3 {
         let res = origin * 4;
         assert!(res.x == 20 && res.y == 36 && res.z == 40);
     }
+}
+
+fn abs<T: cmp::PartialOrd + Default + Neg<Output = T>>(value: T) -> T {
+    if value < T::default() {
+        return -value
+    }
+    value
 }
