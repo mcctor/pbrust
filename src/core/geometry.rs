@@ -6,19 +6,26 @@ pub type Vector2i = Vector2<i32>;
 pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i32>;
 
+fn abs<T: cmp::PartialOrd + Default + Neg<Output = T>>(value: T) -> T {
+    if value < T::default() {
+        return -value
+    }
+    value
+}
+
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Vector2<T> {
     pub x: T,
     pub y: T,
 }
 
-impl<T: Copy> Vector2<T> {
+impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
     pub fn from(x: T, y: T) -> Vector2<T> {
         Vector2 { x, y }
     }
 
     pub fn abs(x: &Vector2<T>) -> Vector2<T> {
-        Vector2 { x: (x.x as f32).abs(), y: (x.y as f32).abs() }
+        Vector2 { x: abs(x.x), y: abs(x.y) }
     }
 }
 
@@ -158,7 +165,7 @@ mod test_vector2 {
         let origin = Vector2::from(4.0, 10.0);
         let res = origin / 2.0;
         assert!(res.x == 2.0 && res.y == 5.0)
-    }
+      }
 
     #[test]
     fn scalar_mult() {
@@ -175,13 +182,13 @@ pub struct Vector3<T> {
     pub z: T,
 }
 
-impl<T: Copy> Vector3<T> {
+impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
     pub fn from(x: T, y: T, z: T) -> Vector3<T> {
         Vector3 { x, y, z }
     }
 
     pub fn abs(x: &Vector3<T>) -> Vector3<T> {
-        Vector3 { x: (x.x as f32).abs(), y: (x.y as f32).abs(), z: (x.z as f32) }
+        Vector3 { x: abs(x.x), y: abs(x.y), z: abs(x.z) }
     }
 }
 
