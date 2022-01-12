@@ -177,7 +177,7 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
 
 impl<T> Vector for Vector3<T> {
     fn dim() -> usize {
-        2
+        3
     }
 }
 
