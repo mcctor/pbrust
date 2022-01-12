@@ -6,7 +6,11 @@ pub type Vector2i = Vector2<i32>;
 pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i32>;
 
-trait Vector: Index<usize> + IndexMut<usize> {}
+trait Vector: Index<usize> + IndexMut<usize> {
+    fn dim() -> usize {
+        unimplemented!();
+    }
+}
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Vector2<T> {
@@ -21,6 +25,9 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
 }
 
 impl<T> Vector for Vector2<T> {
+    fn dim() -> usize {
+        2
+    }
 }
 
 impl<T: ops::Add<Output=T>> Add for Vector2<T> {
@@ -169,6 +176,9 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
 
 
 impl<T> Vector for Vector3<T> {
+    fn dim() -> usize {
+        2
+    }
 }
 
 impl<T: ops::Add<Output=T>> Add for Vector3<T> {
@@ -311,7 +321,11 @@ pub fn abs<T: Vector>(v: T) -> T {
         }
         x
     };
-    Vector3 {
+
+    match v.dim() { }
+
+
+    T {
         x: abs_func(v.x),  // somehow do T.x
         y: abs_func(v.y),  // T.y
         z: abs_func(v.z)   // T.z
