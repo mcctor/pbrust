@@ -6,6 +6,8 @@ pub type Vector2i = Vector2<i32>;
 pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i32>;
 
+trait Vector: Index<usize> + IndexMut<usize> {}
+
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Vector2<T> {
     pub x: T,
@@ -16,6 +18,9 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
     pub fn from(x: T, y: T) -> Vector2<T> {
         Vector2 { x, y }
     }
+}
+
+impl<T> Vector for Vector2<T> {
 }
 
 impl<T: ops::Add<Output=T>> Add for Vector2<T> {
@@ -162,6 +167,10 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
     }
 }
 
+
+impl<T> Vector for Vector3<T> {
+}
+
 impl<T: ops::Add<Output=T>> Add for Vector3<T> {
     type Output = Vector3<T>;
 
@@ -223,7 +232,7 @@ impl<T: Copy + ops::Div<Output=T> + cmp::PartialEq + Default> Div<T> for Vector3
     }
 }
 
-impl<T: Copy> Index<usize> for Vector3<T> {
+impl<T> Index<usize> for Vector3<T> {
     type Output = T;
 
     fn index(&self, index: usize) -> &Self::Output {
@@ -236,7 +245,7 @@ impl<T: Copy> Index<usize> for Vector3<T> {
     }
 }
 
-impl<T: Copy> IndexMut<usize> for Vector3<T> {
+impl<T> IndexMut<usize> for Vector3<T> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,
@@ -295,32 +304,32 @@ mod test_vector3 {
     }
 }
 
-// pub fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(v: Vector3<T>) -> Vector3<T> {
-//     let abs_func = |x: T| {
-//         if x < T::default() {
-//             return -x
-//         }
-//         x
-//     };
-//     Vector3 {
-//         x: abs_func(v.x),
-//         y: abs_func(v.y),
-//         z: abs_func(v.z)
-//     }
-// }
-
-pub fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(v: Vector2<T>) -> Vector2<T> {
+pub fn abs<T: Vector>(v: T) -> T {
     let abs_func = |x: T| {
         if x < T::default() {
-            return -x;
+            return -x
         }
         x
     };
-    Vector2 {
-        x: abs_func(v.x),
-        y: abs_func(v.y),
+    Vector3 {
+        x: abs_func(v.x),  // somehow do T.x
+        y: abs_func(v.y),  // T.y
+        z: abs_func(v.z)   // T.z
     }
 }
+
+// pub fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(v: Vector2<T>) -> Vector2<T> {
+//     let abs_func = |x: T| {
+//         if x < T::default() {
+//             return -x;
+//         }
+//         x
+//     };
+//     Vector2 {
+//         x: abs_func(v.x),
+//         y: abs_func(v.y),
+//     }
+// }
 
 // pub fn dot<T>(v1: Vector2<T>, v2: Vector2<T>) -> T {
 //     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
