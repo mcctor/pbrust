@@ -124,7 +124,7 @@ mod test_vector2 {
         let origin = Vector2::from(1, 2);
         let some_vec = Vector2::from(1, -1);
         let res_vec = origin + some_vec;
-        assert!(res_vec[0] == 2 && res_vec[1] == 1);
+        assert!(res_vec.x == 2 && res_vec.y == 1);
     }
 
     #[test]
@@ -132,7 +132,7 @@ mod test_vector2 {
         let origin = Vector2::from(0, 2);
         let some_vec = Vector2::from(1, -1);
         let res_vec = origin - some_vec;
-        assert!(res_vec[0] == -1 && res_vec[1] == 3)
+        assert!(res_vec.x == -1 && res_vec.y == 3)
     }
 
     #[test]
