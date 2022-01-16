@@ -6,13 +6,6 @@ pub type Vector2i = Vector2<i32>;
 pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i32>;
 
-trait Vector: Index<usize> + IndexMut<usize> {
-    type BaseType;
-
-    fn dim() -> usize {
-        unimplemented!();
-    }
-}
 
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Vector2<T> {
@@ -23,14 +16,6 @@ pub struct Vector2<T> {
 impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
     pub fn from(x: T, y: T) -> Vector2<T> {
         Vector2 { x, y }
-    }
-}
-
-impl<T> Vector for Vector2<T> {
-    type BaseType = T;
-
-    fn dim() -> usize {
-        2
     }
 }
 
@@ -178,15 +163,6 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
     }
 }
 
-
-impl<T> Vector for Vector3<T> {
-    type BaseType = T;
-
-    fn dim() -> usize {
-        3
-    }
-}
-
 impl<T: ops::Add<Output=T>> Add for Vector3<T> {
     type Output = Vector3<T>;
 
@@ -320,7 +296,7 @@ mod test_vector3 {
     }
 }
 
-fn abs_vec2<T:Default + std::cmp::PartialOrd>(v: Vector2<T>) -> Vector2<T> {
+fn abs_vec2<T: Default + std::cmp::PartialOrd>(v: Vector2<T>) -> Vector2<T> {
     let abs = |x| {
         if x < 0 {
             -x
@@ -329,7 +305,7 @@ fn abs_vec2<T:Default + std::cmp::PartialOrd>(v: Vector2<T>) -> Vector2<T> {
         }
     };
 
-    return Vector2 {
+    Vector2 {
         x: abs(v.x),
         y: abs(v.y),
     }
@@ -344,7 +320,7 @@ fn abs_vec3<T: Default + std::cmp::PartialOrd>(v: Vector3<T>) -> Vector3<T> {
         }
     };
 
-    return Vector3 {
+    Vector3 {
         x: abs(v.x),
         y: abs(v.y),
         z: abs(v.z),
@@ -352,7 +328,7 @@ fn abs_vec3<T: Default + std::cmp::PartialOrd>(v: Vector3<T>) -> Vector3<T> {
 }
 
 pub fn dot_vec2<T>(v1: Vector2<T>, v2: Vector2<T>) -> T {
-    v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+    v1.x * v2.x + v1.y * v2.y
 }
 
 pub fn dot_vec3<T>(v1: Vector3<T>, v2: Vector3<T>) -> T {
