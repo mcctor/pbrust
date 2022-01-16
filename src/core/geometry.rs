@@ -7,6 +7,8 @@ pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i32>;
 
 trait Vector: Index<usize> + IndexMut<usize> {
+    type BaseType;
+
     fn dim() -> usize {
         unimplemented!();
     }
@@ -25,6 +27,8 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
 }
 
 impl<T> Vector for Vector2<T> {
+    type BaseType = T;
+
     fn dim() -> usize {
         2
     }
@@ -176,6 +180,8 @@ impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
 
 
 impl<T> Vector for Vector3<T> {
+    type BaseType = T;
+
     fn dim() -> usize {
         3
     }
@@ -314,41 +320,41 @@ mod test_vector3 {
     }
 }
 
-pub fn abs<T: Vector>(v: T) -> T {
-    let abs_func = |x: T| {
-        if x < T::default() {
-            return -x
+fn abs_vec2<T:Default + std::cmp::PartialOrd>(v: Vector2<T>) -> Vector2<T> {
+    let abs = |x| {
+        if x < 0 {
+            -x
+        } else {
+            x
         }
-        x
     };
 
-    match v.dim() { }
-
-
-    T {
-        x: abs_func(v.x),  // somehow do T.x
-        y: abs_func(v.y),  // T.y
-        z: abs_func(v.z)   // T.z
+    return Vector2 {
+        x: abs(v.x),
+        y: abs(v.y),
     }
 }
 
-// pub fn abs<T: cmp::PartialOrd + Default + Neg<Output=T>>(v: Vector2<T>) -> Vector2<T> {
-//     let abs_func = |x: T| {
-//         if x < T::default() {
-//             return -x;
-//         }
-//         x
-//     };
-//     Vector2 {
-//         x: abs_func(v.x),
-//         y: abs_func(v.y),
-//     }
-// }
+fn abs_vec3<T: Default + std::cmp::PartialOrd>(v: Vector3<T>) -> Vector3<T> {
+    let abs = |x| {
+        if x < 0 {
+            -x
+        } else {
+            x
+        }
+    };
 
-// pub fn dot<T>(v1: Vector2<T>, v2: Vector2<T>) -> T {
-//     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
-// }
+    return Vector3 {
+        x: abs(v.x),
+        y: abs(v.y),
+        z: abs(v.z),
+    }
+}
 
-pub fn dot<T>(v1: Vector3<T>, v2: Vector3<T>) -> T {
+pub fn dot_vec2<T>(v1: Vector2<T>, v2: Vector2<T>) -> T {
+    v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+}
+
+pub fn dot_vec3<T>(v1: Vector3<T>, v2: Vector3<T>) -> T {
     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 }
