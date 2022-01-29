@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Index, IndexMut};
+use std::ops::{Add, AddAssign, Index, IndexMut, Mul};
 
 pub type Vector2i = Vector2<i32>;
 pub type Vector2f = Vector2<f32>;
@@ -35,6 +35,17 @@ impl<T: AddAssign + Add<Output=T>> AddAssign<Vector2<T>> for Vector2<T> {
     fn add_assign(&mut self, rhs: Vector2<T>) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn mul(self, rhs: T) -> Self::Output {
+        Vector2 {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        }
     }
 }
 
@@ -92,6 +103,18 @@ impl<T: AddAssign + Add<Output=T>> AddAssign<Vector3<T>> for Vector3<T> {
         self.x += rhs.x;
         self.y += rhs.y;
         self.z += rhs.z;
+    }
+}
+
+impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector3<T> {
+    type Output = Vector3<T>;
+
+    fn mul(self, rhs: T) -> Self::Output {
+        Vector3 {
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
+        }
     }
 }
 
@@ -161,5 +184,19 @@ mod test_vector_ops {
         assert_eq!(res2.x, 1);
         assert_eq!(res2.y, 5);
         assert_eq!(res2.z, 1);
+    }
+
+    #[test]
+    fn scalar_mul() {
+        let vec1 = Vector2::new(1, 1);
+        let res = vec1 * 5;
+        assert_eq!(res.x, 5);
+        assert_eq!(res.y, 5);
+
+        let vec2 = Vector3::new(3, 3, 3);
+        let res2 = vec2 * 5;
+        assert_eq!(res2.x, 15);
+        assert_eq!(res2.y, 15);
+        assert_eq!(res2.z, 15);
     }
 }
