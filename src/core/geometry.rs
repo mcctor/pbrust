@@ -1,12 +1,11 @@
-use std::ops::{Index, IndexMut};
+use std::ops::{Add, AddAssign, Index, IndexMut};
 
 pub type Vector2i = Vector2<i32>;
 pub type Vector2f = Vector2<f32>;
 pub type Vector3i = Vector3<i32>;
 pub type Vector3f = Vector3<f32>;
 
-pub trait Vector<T> : Index<usize> + IndexMut<usize> {
-}
+trait Vector<T>: Index<usize> + IndexMut<usize> {}
 
 pub struct Vector2<T> {
     x: T,
@@ -19,7 +18,24 @@ impl<T> Vector2<T> {
     }
 }
 
-impl<T> Vector<T> for Vector2<T> {
+impl<T> Vector<T> for Vector2<T> {}
+
+impl<T: AddAssign + Add<Output=T>> Add<Vector2<T>> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn add(self, rhs: Vector2<T>) -> Self::Output {
+        Vector2 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl<T: AddAssign + Add<Output=T>> AddAssign<Vector2<T>> for Vector2<T> {
+    fn add_assign(&mut self, rhs: Vector2<T>) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
 }
 
 impl<T> Index<usize> for Vector2<T> {
@@ -35,7 +51,6 @@ impl<T> Index<usize> for Vector2<T> {
 }
 
 impl<T> IndexMut<usize> for Vector2<T> {
-
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
             0 => &mut self.x,
@@ -58,7 +73,26 @@ impl<T> Vector3<T> {
     }
 }
 
-impl<T> Vector<T> for Vector3<T> {
+impl<T> Vector<T> for Vector3<T> {}
+
+impl<T: AddAssign + Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
+    type Output = Vector3<T>;
+
+    fn add(self, rhs: Vector3<T>) -> Self::Output {
+        Vector3 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl<T: AddAssign + Add<Output=T>> AddAssign<Vector3<T>> for Vector3<T> {
+    fn add_assign(&mut self, rhs: Vector3<T>) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
+    }
 }
 
 impl<T> Index<usize> for Vector3<T> {
@@ -87,7 +121,7 @@ impl<T> IndexMut<usize> for Vector3<T> {
 
 #[cfg(test)]
 mod test_vector_ops {
-    use super::{Vector2, Vector3, Vector2f, Vector2i};
+    use super::{Vector2, Vector2f, Vector2i, Vector3};
 
     #[test]
     fn indexing() {
@@ -111,5 +145,21 @@ mod test_vector_ops {
         assert_eq!(vec3.x, 1);
         assert_eq!(vec3.y, 2);
         assert_eq!(vec3.z, 3);
+    }
+
+    #[test]
+    fn addition_op() {
+        let vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+        let res1 = vec1 + vec2;
+        assert_eq!(res1.x, 1);
+        assert_eq!(res1.y, 5);
+
+        let vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+        let res2 = vec3 + vec4;
+        assert_eq!(res2.x, 1);
+        assert_eq!(res2.y, 5);
+        assert_eq!(res2.z, 1);
     }
 }
