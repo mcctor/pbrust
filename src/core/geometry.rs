@@ -198,5 +198,17 @@ mod test_vector_ops {
         assert_eq!(res2.x, 15);
         assert_eq!(res2.y, 15);
         assert_eq!(res2.z, 15);
+
+        // commutative test
+        let vec3 = Vector3::new(3, 3, 3);
+        let res3 = 5 * vec3;
+        assert_eq!(res3.x, 15);
+        assert_eq!(res3.y, 15);
+        assert_eq!(res3.z, 15);
+
+        let vec4 = Vector2::new(2, 2);
+        let res4 = 4 * vec4;
+        assert_eq!(res4.x, 8);
+        assert_eq!(res4.y, 8);
     }
 }
