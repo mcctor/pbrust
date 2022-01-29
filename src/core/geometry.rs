@@ -7,6 +7,7 @@ pub type Vector3f = Vector3<f32>;
 
 trait Vector<T>: Index<usize> + IndexMut<usize> {}
 
+#[derive(Copy, Clone)]
 pub struct Vector2<T> {
     pub x: T,
     pub y: T,
@@ -71,7 +72,7 @@ impl<T> IndexMut<usize> for Vector2<T> {
     }
 }
 
-
+#[derive(Copy, Clone)]
 pub struct Vector3<T> {
     pub x: T,
     pub y: T,
