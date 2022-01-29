@@ -8,8 +8,8 @@ pub type Vector3f = Vector3<f32>;
 trait Vector<T>: Index<usize> + IndexMut<usize> {}
 
 pub struct Vector2<T> {
-    x: T,
-    y: T,
+    pub x: T,
+    pub y: T,
 }
 
 impl<T> Vector2<T> {
@@ -62,9 +62,9 @@ impl<T> IndexMut<usize> for Vector2<T> {
 
 
 pub struct Vector3<T> {
-    x: T,
-    y: T,
-    z: T,
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
 
 impl<T> Vector3<T> {
