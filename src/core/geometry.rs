@@ -50,6 +50,22 @@ impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector2<T> {
     }
 }
 
+impl Mul<Vector2<i32>> for i32 {
+    type Output = Vector2<i32>;
+
+    fn mul(self, rhs: Vector2<i32>) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl Mul<Vector2<f32>> for f32 {
+    type Output = Vector2<f32>;
+
+    fn mul(self, rhs: Vector2<f32>) -> Self::Output {
+        rhs * self
+    }
+}
+
 impl<T> Index<usize> for Vector2<T> {
     type Output = T;
 
@@ -116,6 +132,22 @@ impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector3<T> {
             y: self.y * rhs,
             z: self.z * rhs,
         }
+    }
+}
+
+impl Mul<Vector3<i32>> for i32 {
+    type Output = Vector3<i32>;
+
+    fn mul(self, rhs: Vector3<i32>) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl Mul<Vector3<f32>> for f32 {
+    type Output = Vector3<f32>;
+
+    fn mul(self, rhs: Vector3<f32>) -> Self::Output {
+        rhs * self
     }
 }
 
