@@ -447,7 +447,7 @@ mod test_vector_ops {
     }
 
     #[test]
-    fn scalar_assign_mul() {
+    fn scalar_mul_assign() {
         let mut vec1 = Vector2::new(1, 1);
 
         vec1 *= 5;
