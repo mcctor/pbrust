@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::process::Output;
 
 pub type Vector2i = Vector2<i32>;
@@ -26,10 +26,19 @@ impl<T: Div<Output=T> + Copy + Clone> Div<T> for Vector2<T> {
     type Output = Vector2<T>;
 
     fn div(self, rhs: T) -> Self::Output {
+        let recip = 1 / rhs;
         Vector2 {
-            x: self.x / rhs,
-            y: self.y / rhs,
+            x: self.x * recip,
+            y: self.y * recip,
         }
+    }
+}
+
+impl<T: Div<Output=T> + Copy + Clone> DivAssign<T> for Vector2<T> {
+    fn div_assign(&mut self, rhs: T) {
+        let recip = 1 / rhs;
+        self.x *= recip;
+        self.y *= recip;
     }
 }
 
@@ -172,7 +181,7 @@ impl<T: SubAssign<Output=T> + Copy + Clone> SubAssign<Vector3<T>> for Vector3<T>
     }
 }
 
-impl<T: AddAssign + Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
+impl<T: Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
     type Output = Vector3<T>;
 
     fn add(self, rhs: Vector3<T>) -> Self::Output {
@@ -208,11 +217,21 @@ impl<T: Div<Output=T> + Copy + Clone> Div<T> for Vector3<T> {
     type Output = Vector3<T>;
 
     fn div(self, rhs: T) -> Self::Output {
+        let recip = 1 / rhs;
         Vector3 {
-            x: self.x / rhs,
-            y: self.y / rhs,
-            z: self.z / rhs,
+            x: self.x * recip,
+            y: self.y * recip,
+            z: self.z * recip,
         }
+    }
+}
+
+impl<T: Div<Output=T> + Copy + Clone> DivAssign<T> for Vector3<T> {
+    fn div_assign(&mut self, rhs: T) {
+        let recip = 1 / rhs;
+        self.x *= recip;
+        self.y *= recip;
+        self.z *= recip;
     }
 }
 
