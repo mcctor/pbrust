@@ -209,7 +209,7 @@ impl<T: Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: Add + Add<Output=T> + Copy + Clone> AddAssign<Vector3<T>> for Vector3<T> {
+impl<T: Add<Output=T> + Copy + Clone> AddAssign<Vector3<T>> for Vector3<T> {
     fn add_assign(&mut self, rhs: Vector3<T>) {
         self.x = self.x + rhs.x;
         self.y = self.y + rhs.y;
