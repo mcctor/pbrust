@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul};
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Neg};
 
 pub type Vector2i = Vector2<i32>;
 pub type Vector2f = Vector2<f32>;
@@ -47,6 +47,17 @@ impl<T: AddAssign + Add<Output=T>> AddAssign<Vector2<T>> for Vector2<T> {
     fn add_assign(&mut self, rhs: Vector2<T>) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+impl<T: Neg<Output=T> + Copy + Clone> Neg for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn neg(self) -> Self::Output {
+        Vector2 {
+            x: -self.x,
+            y: -self.y,
+        }
     }
 }
 
@@ -131,6 +142,18 @@ impl<T: AddAssign + Add<Output=T>> AddAssign<Vector3<T>> for Vector3<T> {
         self.x += rhs.x;
         self.y += rhs.y;
         self.z += rhs.z;
+    }
+}
+
+impl<T: Neg<Output=T> + Copy + Clone> Neg for Vector3<T> {
+    type Output = Vector3<T>;
+
+    fn neg(self) -> Self::Output {
+        Vector3 {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
@@ -287,7 +310,7 @@ mod test_vector_ops {
         let vec1 = Vector2::new(3, 3);
         let res1 = -vec1;
         assert_eq!(res1.x, -3);
-        assert_eq!(res2.y, -3);
+        assert_eq!(res1.y, -3);
 
         let vec2 = Vector3::new(1, 1, 1);
         let res2 = -vec2;
