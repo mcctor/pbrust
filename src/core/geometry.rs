@@ -281,4 +281,18 @@ mod test_vector_ops {
         assert_eq!(res2.y, 15);
         assert_eq!(res2.z, 15);
     }
+
+    #[test]
+    fn negation() {
+        let vec1 = Vector2::new(3, 3);
+        let res1 = -vec1;
+        assert_eq!(res1.x, -3);
+        assert_eq!(res2.y, -3);
+
+        let vec2 = Vector3::new(1, 1, 1);
+        let res2 = -vec2;
+        assert_eq!(res2.x, -1);
+        assert_eq!(res2.y, -1);
+        assert_eq!(res2.z, -1);
+    }
 }
