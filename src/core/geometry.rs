@@ -88,10 +88,10 @@ impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector2<T>> for Vector2<T> {
     }
 }
 
-impl<T: SubAssign<T> + Copy + Clone> SubAssign<Vector2<T>> for Vector2<T> {
+impl<T: Sub<Output=T> + Copy + Clone> SubAssign<Vector2<T>> for Vector2<T> {
     fn sub_assign(&mut self, rhs: Vector2<T>) {
-        self.x -= rhs.x;
-        self.y -= rhs.y;
+        self.x = self.x - rhs.x;
+        self.y = self.y - rhs.y;
     }
 }
 
@@ -117,10 +117,10 @@ impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector2<T> {
     }
 }
 
-impl<T: MulAssign<T> + Copy + Clone> MulAssign<T> for Vector2<T> {
+impl<T: Mul<Output=T> + Copy + Clone> MulAssign<T> for Vector2<T> {
     fn mul_assign(&mut self, rhs: T) {
-        self.x *= rhs;
-        self.y *= rhs;
+        self.x = self.x * rhs;
+        self.y = self.y * rhs;
     }
 }
 
@@ -189,11 +189,11 @@ impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: SubAssign<T> + Copy + Clone> SubAssign<Vector3<T>> for Vector3<T> {
+impl<T: Sub<Output=T> + Copy + Clone> SubAssign<Vector3<T>> for Vector3<T> {
     fn sub_assign(&mut self, rhs: Vector3<T>) {
-        self.x -= rhs.x;
-        self.y -= rhs.y;
-        self.z -= rhs.z;
+        self.x = self.x - rhs.x;
+        self.y = self.y - rhs.y;
+        self.z = self.z - rhs.z;
     }
 }
 
@@ -209,11 +209,11 @@ impl<T: Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: AddAssign + Add<Output=T>> AddAssign<Vector3<T>> for Vector3<T> {
+impl<T: Add + Add<Output=T> + Copy + Clone> AddAssign<Vector3<T>> for Vector3<T> {
     fn add_assign(&mut self, rhs: Vector3<T>) {
-        self.x += rhs.x;
-        self.y += rhs.y;
-        self.z += rhs.z;
+        self.x = self.x + rhs.x;
+        self.y = self.y + rhs.y;
+        self.z = self.z + rhs.z;
     }
 }
 
@@ -291,11 +291,11 @@ impl Mul<Vector3<f32>> for f32 {
     }
 }
 
-impl<T: MulAssign<T> + Copy + Clone> MulAssign<T> for Vector3<T> {
+impl<T: Mul<Output=T> + Copy + Clone> MulAssign<T> for Vector3<T> {
     fn mul_assign(&mut self, rhs: T) {
-        self.x *= rhs;
-        self.y *= rhs;
-        self.z *= rhs;
+        self.x = self.x * rhs;
+        self.y = self.y * rhs;
+        self.z = self.z * rhs;
     }
 }
 
