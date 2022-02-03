@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Neg};
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Neg, Sub};
 
 pub type Vector2i = Vector2<i32>;
 pub type Vector2f = Vector2<f32>;
@@ -47,6 +47,17 @@ impl<T: AddAssign + Add<Output=T>> AddAssign<Vector2<T>> for Vector2<T> {
     fn add_assign(&mut self, rhs: Vector2<T>) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector2<T>> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn sub(self, rhs: Vector2<T>) -> Self::Output {
+        Vector2 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
     }
 }
 
@@ -124,6 +135,18 @@ impl<T> Vector3<T> {
 }
 
 impl<T> Vector<T> for Vector3<T> {}
+
+impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector3<T>> for Vector3<T> {
+    type Output = Vector3<T>;
+
+    fn sub(self, rhs: Vector3<T>) -> Self::Output {
+        Vector3 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
+    }
+}
 
 impl<T: AddAssign + Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
     type Output = Vector3<T>;
