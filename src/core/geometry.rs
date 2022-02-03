@@ -244,4 +244,18 @@ mod test_vector_ops {
         assert_eq!(res4.x, 8);
         assert_eq!(res4.y, 8);
     }
+
+    #[test]
+    fn scalar_div() {
+        let vec1 = Vector2::new(25, 25);
+        let res = vec1 / 5;
+        assert_eq!(res.x, 5);
+        assert_eq!(res.y, 5);
+
+        let vec2 = Vector3::new(30, 30, 30);
+        let res2 = vec2 / 2;
+        assert_eq!(res2.x, 15);
+        assert_eq!(res2.y, 15);
+        assert_eq!(res2.z, 15);
+    }
 }
