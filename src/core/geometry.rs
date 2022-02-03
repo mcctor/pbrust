@@ -22,11 +22,23 @@ impl<T> Vector2<T> {
 
 impl<T> Vector<T> for Vector2<T> {}
 
-impl<T: Div<Output=T> + Copy + Clone> Div<T> for Vector2<T> {
-    type Output = Vector2<T>;
+impl Div<i32> for Vector2<i32> {
+    type Output = Vector2<i32>;
 
-    fn div(self, rhs: T) -> Self::Output {
-        let recip = 1 / rhs;
+    fn div(self, rhs: i32) -> Self::Output {
+        let recip = 1.0 / rhs as f32;
+        Vector2 {
+            x: (self.x as f32 * recip) as i32,
+            y: (self.y as f32 * recip) as i32,
+        }
+    }
+}
+
+impl Div<f32> for Vector2<f32> {
+    type Output = Vector2<f32>;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        let recip = 1.0 / rhs;
         Vector2 {
             x: self.x * recip,
             y: self.y * recip,
@@ -34,15 +46,21 @@ impl<T: Div<Output=T> + Copy + Clone> Div<T> for Vector2<T> {
     }
 }
 
-impl<T: Div<Output=T> + Copy + Clone> DivAssign<T> for Vector2<T> {
-    fn div_assign(&mut self, rhs: T) {
-        let recip = 1 / rhs;
-        self.x *= recip;
-        self.y *= recip;
+impl DivAssign<i32> for Vector2<i32> {
+    fn div_assign(&mut self, rhs: i32) {
+        self.x = (self.x as f32 / rhs as f32) as i32;
+        self.y = (self.y as f32 / rhs as f32) as i32;
     }
 }
 
-impl<T: AddAssign + Add<Output=T>> Add<Vector2<T>> for Vector2<T> {
+impl DivAssign<f32> for Vector2<f32> {
+    fn div_assign(&mut self, rhs: f32) {
+        self.x = self.x / rhs;
+        self.y = self.y / rhs;
+    }
+}
+
+impl<T: Add<Output=T>> Add<Vector2<T>> for Vector2<T> {
     type Output = Vector2<T>;
 
     fn add(self, rhs: Vector2<T>) -> Self::Output {
@@ -71,7 +89,7 @@ impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector2<T>> for Vector2<T> {
     }
 }
 
-impl<T: SubAssign<Output=T> + Copy + Clone> SubAssign<Vector2<T>> for Vector2<T> {
+impl<T: SubAssign<T> + Copy + Clone> SubAssign<Vector2<T>> for Vector2<T> {
     fn sub_assign(&mut self, rhs: Vector2<T>) {
         self.x -= rhs.x;
         self.y -= rhs.y;
@@ -100,11 +118,10 @@ impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector2<T> {
     }
 }
 
-impl<T: MulAssign<Output=T> + Copy + Clone> MulAssign<T> for Vector2<T> {
+impl<T: MulAssign<T> + Copy + Clone> MulAssign<T> for Vector2<T> {
     fn mul_assign(&mut self, rhs: T) {
         self.x *= rhs;
         self.y *= rhs;
-        self.z *= rhs;
     }
 }
 
@@ -173,7 +190,7 @@ impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: SubAssign<Output=T> + Copy + Clone> SubAssign<Vector3<T>> for Vector3<T> {
+impl<T: SubAssign<T> + Copy + Clone> SubAssign<Vector3<T>> for Vector3<T> {
     fn sub_assign(&mut self, rhs: Vector3<T>) {
         self.x -= rhs.x;
         self.y -= rhs.y;
@@ -213,11 +230,24 @@ impl<T: Neg<Output=T> + Copy + Clone> Neg for Vector3<T> {
     }
 }
 
-impl<T: Div<Output=T> + Copy + Clone> Div<T> for Vector3<T> {
-    type Output = Vector3<T>;
+impl Div<i32> for Vector3<i32> {
+    type Output = Vector3<i32>;
 
-    fn div(self, rhs: T) -> Self::Output {
-        let recip = 1 / rhs;
+    fn div(self, rhs: i32) -> Self::Output {
+        let recip = 1.0 / (rhs as f32);
+        Vector3 {
+            x: ((self.x as f32) * recip) as i32,
+            y: (self.y as f32 * recip) as i32,
+            z: (self.z as f32 * recip) as i32,
+        }
+    }
+}
+
+impl Div<f32> for Vector3<f32> {
+    type Output = Vector3<f32>;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        let recip = 1.0 / rhs;
         Vector3 {
             x: self.x * recip,
             y: self.y * recip,
@@ -226,12 +256,11 @@ impl<T: Div<Output=T> + Copy + Clone> Div<T> for Vector3<T> {
     }
 }
 
-impl<T: Div<Output=T> + Copy + Clone> DivAssign<T> for Vector3<T> {
-    fn div_assign(&mut self, rhs: T) {
-        let recip = 1 / rhs;
-        self.x *= recip;
-        self.y *= recip;
-        self.z *= recip;
+impl DivAssign<i32> for Vector3<i32> {
+    fn div_assign(&mut self, rhs: i32) {
+        self.x = (self.x as f32 / rhs as f32) as i32;
+        self.y = (self.y as f32 / rhs as f32) as i32;
+        self.z = (self.z as f32 / rhs as f32) as i32;
     }
 }
 
@@ -263,7 +292,7 @@ impl Mul<Vector3<f32>> for f32 {
     }
 }
 
-impl<T: MulAssign<Output=T> + Copy + Clone> MulAssign<T> for Vector3<T> {
+impl<T: MulAssign<T> + Copy + Clone> MulAssign<T> for Vector3<T> {
     fn mul_assign(&mut self, rhs: T) {
         self.x *= rhs;
         self.y *= rhs;
@@ -340,6 +369,24 @@ mod test_vector_ops {
     }
 
     #[test]
+    fn addition_assign_op() {
+        let mut vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+
+        vec1 += vec2;
+        assert_eq!(vec1.x, 1);
+        assert_eq!(vec1.y, 5);
+
+        let mut vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+
+        vec3 += vec4;
+        assert_eq!(vec3.x, 1);
+        assert_eq!(vec3.y, 5);
+        assert_eq!(vec3.z, 1);
+    }
+
+    #[test]
     fn subtraction_op() {
         let vec1 = Vector2::new(0, 2);
         let vec2 = Vector2::new(1, 3);
@@ -353,6 +400,24 @@ mod test_vector_ops {
         assert_eq!(res2.x, -1);
         assert_eq!(res2.y, -1);
         assert_eq!(res2.z, -1);
+    }
+
+    #[test]
+    fn subtraction_assign_op() {
+        let mut vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+
+        vec1 -= vec2;
+        assert_eq!(vec1.x, -1);
+        assert_eq!(vec1.y, -1);
+
+        let mut vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+
+        vec3 -= vec4;
+        assert_eq!(vec3.x, -1);
+        assert_eq!(vec3.y, -1);
+        assert_eq!(vec3.z, -1);
     }
 
     #[test]
@@ -382,6 +447,22 @@ mod test_vector_ops {
     }
 
     #[test]
+    fn scalar_assign_mul() {
+        let mut vec1 = Vector2::new(1, 1);
+
+        vec1 *= 5;
+        assert_eq!(vec1.x, 5);
+        assert_eq!(vec1.y, 5);
+
+        let mut vec2 = Vector3::new(3, 3, 3);
+
+        vec2 *= 5;
+        assert_eq!(vec2.x, 15);
+        assert_eq!(vec2.y, 15);
+        assert_eq!(vec2.z, 15);
+    }
+
+    #[test]
     fn scalar_div() {
         let vec1 = Vector2::new(25, 25);
         let res = vec1 / 5;
@@ -393,6 +474,20 @@ mod test_vector_ops {
         assert_eq!(res2.x, 15);
         assert_eq!(res2.y, 15);
         assert_eq!(res2.z, 15);
+    }
+
+    #[test]
+    fn scalar_div_assign() {
+        let mut vec1 = Vector2::new(25, 25);
+        vec1 /= 5;
+        assert_eq!(vec1.x, 5);
+        assert_eq!(vec1.y, 5);
+
+        let mut vec2 = Vector3::new(30, 30, 30);
+        vec2 /= 2;
+        assert_eq!(vec2.x, 15);
+        assert_eq!(vec2.y, 15);
+        assert_eq!(vec2.z, 15);
     }
 
     #[test]
