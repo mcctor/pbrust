@@ -1,5 +1,4 @@
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
-use std::process::Output;
 
 pub type Vector2i = Vector2<i32>;
 pub type Vector2f = Vector2<f32>;
