@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, Neg, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::process::Output;
 
 pub type Vector2i = Vector2<i32>;
@@ -88,6 +88,14 @@ impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector2<T> {
             x: self.x * rhs,
             y: self.y * rhs,
         }
+    }
+}
+
+impl<T: MulAssign<Output=T> + Copy + Clone> MulAssign<T> for Vector2<T> {
+    fn mul_assign(&mut self, rhs: T) {
+        self.x *= rhs;
+        self.y *= rhs;
+        self.z *= rhs;
     }
 }
 
@@ -233,6 +241,14 @@ impl Mul<Vector3<f32>> for f32 {
 
     fn mul(self, rhs: Vector3<f32>) -> Self::Output {
         rhs * self
+    }
+}
+
+impl<T: MulAssign<Output=T> + Copy + Clone> MulAssign<T> for Vector3<T> {
+    fn mul_assign(&mut self, rhs: T) {
+        self.x *= rhs;
+        self.y *= rhs;
+        self.z *= rhs;
     }
 }
 
