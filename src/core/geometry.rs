@@ -266,6 +266,22 @@ mod test_vector_ops {
     }
 
     #[test]
+    fn subtraction_op() {
+        let vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+        let res1 = vec1 - vec2;
+        assert_eq!(res1.x, -1);
+        assert_eq!(res1.y, -1);
+
+        let vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+        let res2 = vec3 - vec4;
+        assert_eq!(res2.x, -1);
+        assert_eq!(res2.y, -1);
+        assert_eq!(res2.z, -1);
+    }
+
+    #[test]
     fn scalar_mul() {
         let vec1 = Vector2::new(1, 1);
         let res = vec1 * 5;
