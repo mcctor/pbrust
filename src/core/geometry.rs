@@ -5,7 +5,6 @@ pub type Vector2f = Vector2<f32>;
 pub type Vector3i = Vector3<i32>;
 pub type Vector3f = Vector3<f32>;
 
-trait Vector<T>: Index<usize> + IndexMut<usize> {}
 
 #[derive(Copy, Clone)]
 pub struct Vector2<T> {
@@ -13,13 +12,22 @@ pub struct Vector2<T> {
     pub y: T,
 }
 
-impl<T> Vector2<T> {
+impl<T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>> Vector2<T> {
     pub fn new(x: T, y: T) -> Self {
         Vector2 { x, y }
     }
-}
 
-impl<T> Vector<T> for Vector2<T> {}
+    pub fn abs(vec: Vector2<T>) -> Vector2<T> {
+        Vector2 {
+            x: abs_t(vec.x),
+            y: abs_t(vec.y),
+        }
+    }
+
+    pub fn dot(vec1: Vector2<T>, vec2: Vector2<T>) -> T {
+        vec1.x * vec2.x + vec1.y * vec2.y
+    }
+}
 
 impl Div<i32> for Vector2<i32> {
     type Output = Vector2<i32>;
@@ -169,13 +177,23 @@ pub struct Vector3<T> {
     pub z: T,
 }
 
-impl<T> Vector3<T> {
+impl<T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>> Vector3<T> {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
     }
-}
 
-impl<T> Vector<T> for Vector3<T> {}
+    fn abs(vec: Self) -> Self {
+        Vector3 {
+            x: abs_t(vec.x),
+            y: abs_t(vec.y),
+            z: abs_t(vec.z),
+        }
+    }
+
+    pub fn dot(vec1: Self, vec2: Self) -> T {
+        vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z
+    }
+}
 
 impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector3<T>> for Vector3<T> {
     type Output = Vector3<T>;
@@ -320,6 +338,14 @@ impl<T> IndexMut<usize> for Vector3<T> {
             2 => &mut self.z,
             _ => panic!("index provided non-existent")
         }
+    }
+}
+
+fn abs_t<T: Default + PartialOrd<T> + Neg<Output=T>>(x: T) -> T {
+    if x < T::default() {
+        -x
+    } else {
+        x
     }
 }
 
@@ -501,5 +527,19 @@ mod test_vector_ops {
         assert_eq!(res2.x, -1);
         assert_eq!(res2.y, -1);
         assert_eq!(res2.z, -1);
+    }
+
+    #[test]
+    fn abs() {
+        let vec = Vector2::new(-2, -1);
+        let vec = Vector2::abs(vec);
+        assert_eq!(vec.x, 2);
+        assert_eq!(vec.y, 1);
+
+        let vec = Vector3::new(-2, -1, -5);
+        let vec = Vector3::abs(vec);
+        assert_eq!(vec.x, 2);
+        assert_eq!(vec.y, 1);
+        assert_eq!(vec.z, 5);
     }
 }
