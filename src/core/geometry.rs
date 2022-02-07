@@ -12,7 +12,9 @@ pub struct Vector2<T> {
     pub y: T,
 }
 
-impl<T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>> Vector2<T> {
+impl<T> Vector2<T>
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>
+{
     pub fn new(x: T, y: T) -> Self {
         Vector2 { x, y }
     }
@@ -177,7 +179,9 @@ pub struct Vector3<T> {
     pub z: T,
 }
 
-impl<T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>> Vector3<T> {
+impl<T> Vector3<T>
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>
+{
     pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
     }
