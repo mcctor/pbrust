@@ -544,7 +544,7 @@ mod test_vector_ops {
     #[test]
     fn abs() {
         let vec = Vector2::new(-2, -1);
-        let vec = Vector2::abs(vec);
+        let vec = Vector2::abs(&vec);
         assert_eq!(vec.x, 2);
         assert_eq!(vec.y, 1);
 
