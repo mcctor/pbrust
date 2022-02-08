@@ -13,21 +13,25 @@ pub struct Vector2<T> {
 }
 
 impl<T> Vector2<T>
-    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T> + Copy + Clone
 {
     pub fn new(x: T, y: T) -> Self {
         Vector2 { x, y }
     }
 
-    pub fn abs(vec: Vector2<T>) -> Vector2<T> {
+    pub fn abs(vec: &Vector2<T>) -> Vector2<T> {
         Vector2 {
             x: abs_t(vec.x),
             y: abs_t(vec.y),
         }
     }
 
-    pub fn dot(vec1: Vector2<T>, vec2: Vector2<T>) -> T {
+    pub fn dot(vec1: &Self, vec2: &Self) -> T {
         vec1.x * vec2.x + vec1.y * vec2.y
+    }
+
+    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
+        Vector2::dot(&Vector2::abs(vec1), &Vector2::abs(vec2))
     }
 }
 
@@ -180,13 +184,13 @@ pub struct Vector3<T> {
 }
 
 impl<T> Vector3<T>
-    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T>
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T> + Copy + Clone
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
     }
 
-    fn abs(vec: Self) -> Self {
+    pub fn abs(vec: &Self) -> Self {
         Vector3 {
             x: abs_t(vec.x),
             y: abs_t(vec.y),
@@ -194,8 +198,12 @@ impl<T> Vector3<T>
         }
     }
 
-    pub fn dot(vec1: Self, vec2: Self) -> T {
+    pub fn dot(vec1: &Self, vec2: &Self) -> T {
         vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z
+    }
+
+    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
+        Vector3::dot(&Vector3::abs(vec1), &Vector3::abs(vec2))
     }
 }
 
@@ -541,7 +549,7 @@ mod test_vector_ops {
         assert_eq!(vec.y, 1);
 
         let vec = Vector3::new(-2, -1, -5);
-        let vec = Vector3::abs(vec);
+        let vec = Vector3::abs(&vec);
         assert_eq!(vec.x, 2);
         assert_eq!(vec.y, 1);
         assert_eq!(vec.z, 5);
