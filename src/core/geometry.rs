@@ -6,10 +6,18 @@ pub type Vector3i = Vector3<i32>;
 pub type Vector3f = Vector3<f32>;
 
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Vector2<T> {
     pub x: T,
     pub y: T,
+}
+
+impl<T> Vector2<T>
+    where T: Mul<Output=T>
+{
+    pub fn cross(&self) -> Vector2<T> {
+        unimplemented!()
+    }
 }
 
 impl<T> Vector2<T>
@@ -176,7 +184,7 @@ impl<T> IndexMut<usize> for Vector2<T> {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Vector3<T> {
     pub x: T,
     pub y: T,
@@ -184,7 +192,7 @@ pub struct Vector3<T> {
 }
 
 impl<T> Vector3<T>
-    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T> + Copy + Clone
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T> + Sub<Output=T> + Copy + Clone
 {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
@@ -195,6 +203,20 @@ impl<T> Vector3<T>
             x: abs_t(vec.x),
             y: abs_t(vec.y),
             z: abs_t(vec.z),
+        }
+    }
+
+    pub fn cross(vec1: &Self, vec2: &Self) -> Self {
+        let v1x = vec1.x;
+        let v1y = vec1.y;
+        let v1z = vec1.z;
+        let v2x = vec2.x;
+        let v2y = vec2.y;
+        let v2z = vec2.z;
+        Vector3 {
+            x: (v1y * v2z) - (v1z * v2y),
+            y: (v1z * v2x) - (v1x * v2z),
+            z: (v1x * v2y) - (v1y * v2x),
         }
     }
 
@@ -566,5 +588,13 @@ mod test_vector_ops {
         let vec2 = Vector2::new(-2, 1);
         let res = Vector2::abs_dot(&vec1, &vec2);
         assert_eq!(2, res);
+    }
+
+    #[test]
+    fn cross_product() {
+        let vec1 = Vector3::new(1, 0, 0);
+        let vec2 = Vector3::new(0, 1, 0);
+        let perp_vector = Vector3::cross(&vec1, &vec2);
+        assert_eq!(perp_vector, Vector3::new(0, 0, 1));
     }
 }
