@@ -26,12 +26,12 @@ impl<T> Vector2<T>
         }
     }
 
-    pub fn dot(vec1: &Self, vec2: &Self) -> T {
+    pub fn dot(vec1: &Vector2<T>, vec2: &Vector2<T>) -> T {
         vec1.x * vec2.x + vec1.y * vec2.y
     }
 
-    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
-        Vector2::dot(&Vector2::abs(vec1), &Vector2::abs(vec2))
+    pub fn abs_dot(vec1: &Vector2<T>, vec2: &Vector2<T>) -> T {
+        abs_t(Vector2::dot(vec1, vec2))
     }
 }
 
@@ -203,7 +203,7 @@ impl<T> Vector3<T>
     }
 
     pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
-        Vector3::dot(&Vector3::abs(vec1), &Vector3::abs(vec2))
+        abs_t(Vector3::dot(vec1, vec2))
     }
 }
 
