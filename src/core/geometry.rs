@@ -554,4 +554,17 @@ mod test_vector_ops {
         assert_eq!(vec.y, 1);
         assert_eq!(vec.z, 5);
     }
+
+    #[test]
+    fn abs_dot() {
+        let vec1 = Vector3::new(1, 0, 0);
+        let vec2 = Vector3::new(-2, 1, 0);
+        let res = Vector3::abs_dot(&vec1, &vec2);
+        assert_eq!(2, res);
+
+        let vec1 = Vector2::new(1, 0);
+        let vec2 = Vector2::new(-2, 1);
+        let res = Vector2::abs_dot(&vec1, &vec2);
+        assert_eq!(2, res);
+    }
 }
