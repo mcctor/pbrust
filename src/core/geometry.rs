@@ -1,82 +1,156 @@
-use std::{cmp, ops};
-use std::ops::{Add, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
-pub type Vector2f = Vector2<f32>;
 pub type Vector2i = Vector2<i32>;
-pub type Vector3f = Vector3<f32>;
+pub type Vector2f = Vector2<f32>;
 pub type Vector3i = Vector3<i32>;
+pub type Vector3f = Vector3<f32>;
 
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Copy, Clone)]
 pub struct Vector2<T> {
     pub x: T,
     pub y: T,
 }
 
-impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector2<T> {
-    pub fn from(x: T, y: T) -> Vector2<T> {
+impl<T> Vector2<T>
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T> + Copy + Clone
+{
+    pub fn new(x: T, y: T) -> Self {
         Vector2 { x, y }
     }
-}
 
-impl<T: ops::Add<Output=T>> Add for Vector2<T> {
-    type Output = Self;
+    pub fn abs(vec: &Vector2<T>) -> Vector2<T> {
+        Vector2 {
+            x: abs_t(vec.x),
+            y: abs_t(vec.y),
+        }
+    }
 
-    fn add(self, rhs: Self) -> Self::Output {
-        Self { x: self.x + rhs.x, y: self.y + rhs.y }
+    pub fn dot(vec1: &Self, vec2: &Self) -> T {
+        vec1.x * vec2.x + vec1.y * vec2.y
+    }
+
+    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
+        Vector2::dot(&Vector2::abs(vec1), &Vector2::abs(vec2))
     }
 }
 
-impl<T: ops::Sub<Output=T>> Sub for Vector2<T> {
-    type Output = Self;
+impl Div<i32> for Vector2<i32> {
+    type Output = Vector2<i32>;
 
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self { x: self.x - rhs.x, y: self.y - rhs.y }
+    fn div(self, rhs: i32) -> Self::Output {
+        let recip = 1.0 / rhs as f32;
+        Vector2 {
+            x: (self.x as f32 * recip) as i32,
+            y: (self.y as f32 * recip) as i32,
+        }
     }
 }
 
-impl<T: ops::Neg<Output=T>> Neg for Vector2<T> {
-    type Output = Self;
+impl Div<f32> for Vector2<f32> {
+    type Output = Vector2<f32>;
+
+    fn div(self, rhs: f32) -> Self::Output {
+        let recip = 1.0 / rhs;
+        Vector2 {
+            x: self.x * recip,
+            y: self.y * recip,
+        }
+    }
+}
+
+impl DivAssign<i32> for Vector2<i32> {
+    fn div_assign(&mut self, rhs: i32) {
+        self.x = (self.x as f32 / rhs as f32) as i32;
+        self.y = (self.y as f32 / rhs as f32) as i32;
+    }
+}
+
+impl DivAssign<f32> for Vector2<f32> {
+    fn div_assign(&mut self, rhs: f32) {
+        self.x = self.x / rhs;
+        self.y = self.y / rhs;
+    }
+}
+
+impl<T: Add<Output=T>> Add<Vector2<T>> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn add(self, rhs: Vector2<T>) -> Self::Output {
+        Vector2 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl<T: AddAssign + Add<Output=T>> AddAssign<Vector2<T>> for Vector2<T> {
+    fn add_assign(&mut self, rhs: Vector2<T>) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
+}
+
+impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector2<T>> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn sub(self, rhs: Vector2<T>) -> Self::Output {
+        Vector2 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
+    }
+}
+
+impl<T: Sub<Output=T> + Copy + Clone> SubAssign<Vector2<T>> for Vector2<T> {
+    fn sub_assign(&mut self, rhs: Vector2<T>) {
+        self.x = self.x - rhs.x;
+        self.y = self.y - rhs.y;
+    }
+}
+
+impl<T: Neg<Output=T> + Copy + Clone> Neg for Vector2<T> {
+    type Output = Vector2<T>;
 
     fn neg(self) -> Self::Output {
-        Self { x: -self.x, y: -self.y }
+        Vector2 {
+            x: -self.x,
+            y: -self.y,
+        }
     }
 }
 
-impl<T: ops::Mul<Output=T>> Mul for Vector2<T> {
-    type Output = Self;
-
-    fn mul(self, rhs: Self) -> Self::Output {
-        Self { x: self.x * rhs.x, y: self.y * rhs.y }
-    }
-}
-
-impl<T> MulAssign for Vector2<T> {
-    fn mul_assign(&mut self, rhs: Self) {
-        todo!()
-    }
-}
-
-impl<T: Copy + ops::Mul<Output=T>> Mul<T> for Vector2<T> {
-    type Output = Self;
+impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector2<T> {
+    type Output = Vector2<T>;
 
     fn mul(self, rhs: T) -> Self::Output {
-        Self { x: self.x * rhs, y: self.y * rhs }
+        Vector2 {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        }
     }
 }
 
-impl<T> DivAssign for Vector2<T> {
-    fn div_assign(&mut self, rhs: Self) {
-        todo!()
+impl<T: Mul<Output=T> + Copy + Clone> MulAssign<T> for Vector2<T> {
+    fn mul_assign(&mut self, rhs: T) {
+        self.x = self.x * rhs;
+        self.y = self.y * rhs;
     }
 }
 
-impl<T: Copy + ops::Div<Output=T> + cmp::PartialEq + Default> Div<T> for Vector2<T> {
-    type Output = Self;
+impl Mul<Vector2<i32>> for i32 {
+    type Output = Vector2<i32>;
 
-    fn div(self, rhs: T) -> Self::Output {
-        assert!(rhs != T::default());
-        Self { x: self.x / rhs, y: self.y / rhs }
+    fn mul(self, rhs: Vector2<i32>) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl Mul<Vector2<f32>> for f32 {
+    type Output = Vector2<f32>;
+
+    fn mul(self, rhs: Vector2<f32>) -> Self::Output {
+        rhs * self
     }
 }
 
@@ -87,7 +161,7 @@ impl<T> Index<usize> for Vector2<T> {
         match index {
             0 => &self.x,
             1 => &self.y,
-            _ => panic!("valid index are 0, 1")
+            _ => panic!("index provided non-existent"),
         }
     }
 }
@@ -97,130 +171,161 @@ impl<T> IndexMut<usize> for Vector2<T> {
         match index {
             0 => &mut self.x,
             1 => &mut self.y,
-            _ => panic!("valid index are 0, 1")
+            _ => panic!("index provided non-existent"),
         }
     }
 }
 
-#[cfg(test)]
-mod test_vector2 {
-    use crate::core::geometry::Vector2;
-
-    #[test]
-    fn indexing() {
-        let some_vec = Vector2::from(0, 1);
-        assert!(some_vec[0] == 0 && some_vec[1] == 1);
-    }
-
-    #[test]
-    #[should_panic]
-    fn index_out_of_range() {
-        let some_vec = Vector2::from(0, 0);
-        assert_eq!(some_vec[2], 0);
-    }
-
-    #[test]
-    fn add() {
-        let origin = Vector2::from(1, 2);
-        let some_vec = Vector2::from(1, -1);
-        let res_vec = origin + some_vec;
-        assert!(res_vec.x == 2 && res_vec.y == 1);
-    }
-
-    #[test]
-    fn sub() {
-        let origin = Vector2::from(0, 2);
-        let some_vec = Vector2::from(1, -1);
-        let res_vec = origin - some_vec;
-        assert!(res_vec.x == -1 && res_vec.y == 3)
-    }
-
-    #[test]
-    fn div() {
-        let origin = Vector2::from(4.0, 10.0);
-        let res = origin / 2.0;
-        assert!(res.x == 2.0 && res.y == 5.0)
-    }
-
-    #[test]
-    fn scalar_mult() {
-        let origin = Vector2::from(5, 9);
-        let res = origin * 4;
-        assert!(res.x == 20 && res.y == 36)
-    }
-}
-
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Copy, Clone)]
 pub struct Vector3<T> {
     pub x: T,
     pub y: T,
     pub z: T,
 }
 
-impl<T: Copy + cmp::PartialOrd + Default + Neg<Output=T>> Vector3<T> {
-    pub fn from(x: T, y: T, z: T) -> Vector3<T> {
+impl<T> Vector3<T>
+    where T: Mul<Output=T> + Add<Output=T> + Default + PartialOrd<T> + Neg<Output=T> + Copy + Clone
+{
+    pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
     }
+
+    pub fn abs(vec: &Self) -> Self {
+        Vector3 {
+            x: abs_t(vec.x),
+            y: abs_t(vec.y),
+            z: abs_t(vec.z),
+        }
+    }
+
+    pub fn dot(vec1: &Self, vec2: &Self) -> T {
+        vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z
+    }
+
+    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
+        Vector3::dot(&Vector3::abs(vec1), &Vector3::abs(vec2))
+    }
 }
 
-impl<T: ops::Add<Output=T>> Add for Vector3<T> {
+impl<T: Sub<Output=T> + Copy + Clone> Sub<Vector3<T>> for Vector3<T> {
     type Output = Vector3<T>;
 
-    fn add(self, rhs: Self) -> Self::Output {
-        Self { x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
+    fn sub(self, rhs: Vector3<T>) -> Self::Output {
+        Vector3 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+            z: self.z - rhs.z,
+        }
     }
 }
 
-impl<T: ops::Sub<Output=T>> Sub for Vector3<T> {
-    type Output = Self;
-
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self { x: self.x - rhs.x, y: self.y - rhs.y, z: self.z - rhs.z }
+impl<T: Sub<Output=T> + Copy + Clone> SubAssign<Vector3<T>> for Vector3<T> {
+    fn sub_assign(&mut self, rhs: Vector3<T>) {
+        self.x = self.x - rhs.x;
+        self.y = self.y - rhs.y;
+        self.z = self.z - rhs.z;
     }
 }
 
-impl<T: Neg<Output=T>> Neg for Vector3<T> {
-    type Output = Self;
+impl<T: Add<Output=T>> Add<Vector3<T>> for Vector3<T> {
+    type Output = Vector3<T>;
+
+    fn add(self, rhs: Vector3<T>) -> Self::Output {
+        Vector3 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl<T: Add<Output=T> + Copy + Clone> AddAssign<Vector3<T>> for Vector3<T> {
+    fn add_assign(&mut self, rhs: Vector3<T>) {
+        self.x = self.x + rhs.x;
+        self.y = self.y + rhs.y;
+        self.z = self.z + rhs.z;
+    }
+}
+
+impl<T: Neg<Output=T> + Copy + Clone> Neg for Vector3<T> {
+    type Output = Vector3<T>;
 
     fn neg(self) -> Self::Output {
-        Self { x: -self.x, y: -self.y, z: -self.z }
+        Vector3 {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
-impl<T> MulAssign for Vector3<T> {
-    fn mul_assign(&mut self, rhs: Self) {
-        todo!()
+impl Div<i32> for Vector3<i32> {
+    type Output = Vector3<i32>;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        let recip = 1.0 / (rhs as f32);
+        Vector3 {
+            x: ((self.x as f32) * recip) as i32,
+            y: (self.y as f32 * recip) as i32,
+            z: (self.z as f32 * recip) as i32,
+        }
     }
 }
 
-impl<T: ops::Mul<Output=T>> Mul for Vector3<T> {
-    type Output = Self;
+impl Div<f32> for Vector3<f32> {
+    type Output = Vector3<f32>;
 
-    fn mul(self, rhs: Self) -> Self::Output {
-        Self { x: self.x * rhs.x, y: self.y * rhs.y, z: self.z * rhs.z }
+    fn div(self, rhs: f32) -> Self::Output {
+        let recip = 1.0 / rhs;
+        Vector3 {
+            x: self.x * recip,
+            y: self.y * recip,
+            z: self.z * recip,
+        }
     }
 }
 
-impl<T: Copy + ops::Mul<Output=T>> Mul<T> for Vector3<T> {
-    type Output = Self;
+impl DivAssign<i32> for Vector3<i32> {
+    fn div_assign(&mut self, rhs: i32) {
+        self.x = (self.x as f32 / rhs as f32) as i32;
+        self.y = (self.y as f32 / rhs as f32) as i32;
+        self.z = (self.z as f32 / rhs as f32) as i32;
+    }
+}
+
+impl<T: Mul<Output=T> + Copy + Clone> Mul<T> for Vector3<T> {
+    type Output = Vector3<T>;
 
     fn mul(self, rhs: T) -> Self::Output {
-        Self { x: self.x * rhs, y: self.y * rhs, z: self.z * rhs }
+        Vector3 {
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
+        }
     }
 }
 
-impl<T> DivAssign for Vector3<T> {
-    fn div_assign(&mut self, rhs: Self) {
-        todo!()
+impl Mul<Vector3<i32>> for i32 {
+    type Output = Vector3<i32>;
+
+    fn mul(self, rhs: Vector3<i32>) -> Self::Output {
+        rhs * self
     }
 }
 
-impl<T: Copy + ops::Div<Output=T> + cmp::PartialEq + Default> Div<T> for Vector3<T> {
-    type Output = Self;
+impl Mul<Vector3<f32>> for f32 {
+    type Output = Vector3<f32>;
 
-    fn div(self, rhs: T) -> Self::Output {
-        assert!(rhs != T::default());
-        Self { x: self.x / rhs, y: self.y / rhs, z: self.z / rhs }
+    fn mul(self, rhs: Vector3<f32>) -> Self::Output {
+        rhs * self
+    }
+}
+
+impl<T: Mul<Output=T> + Copy + Clone> MulAssign<T> for Vector3<T> {
+    fn mul_assign(&mut self, rhs: T) {
+        self.x = self.x * rhs;
+        self.y = self.y * rhs;
+        self.z = self.z * rhs;
     }
 }
 
@@ -232,7 +337,7 @@ impl<T> Index<usize> for Vector3<T> {
             0 => &self.x,
             1 => &self.y,
             2 => &self.z,
-            _ => panic!("valid index are 0, 1, 2")
+            _ => panic!("index provided non-existent"),
         }
     }
 }
@@ -243,94 +348,210 @@ impl<T> IndexMut<usize> for Vector3<T> {
             0 => &mut self.x,
             1 => &mut self.y,
             2 => &mut self.z,
-            _ => panic!("valid index are 0, 1, 2")
+            _ => panic!("index provided non-existent")
         }
+    }
+}
+
+fn abs_t<T: Default + PartialOrd<T> + Neg<Output=T>>(x: T) -> T {
+    if x < T::default() {
+        -x
+    } else {
+        x
     }
 }
 
 #[cfg(test)]
-mod test_vector3 {
-    use crate::core::geometry::Vector3;
+mod test_vector_ops {
+    use super::{Vector2, Vector2f, Vector2i, Vector3};
 
     #[test]
     fn indexing() {
-        let some_vec = Vector3::from(0, 1, 0);
-        assert!(some_vec[0] == 0 && some_vec[1] == 1 && some_vec[2] == 0);
+        let vec2 = Vector2 { x: 2, y: 3 };
+        assert_eq!(vec2[0], 2);
+        assert_eq!(vec2[1], 3);
+
+        let vec3 = Vector3 { x: 4, y: 5, z: 6 };
+        assert_eq!(vec3[0], 4);
+        assert_eq!(vec3[1], 5);
+        assert_eq!(vec3[2], 6);
     }
 
     #[test]
-    #[should_panic]
-    fn index_out_of_range() {
-        let some_vec = Vector3::from(0, 0, 3);
-        assert_eq!(some_vec[3], 0);
+    fn creation() {
+        let vec2 = Vector2::new(1, 2);
+        assert_eq!(vec2.x, 1);
+        assert_eq!(vec2.y, 2);
+
+        let vec3 = Vector3::new(1, 2, 3);
+        assert_eq!(vec3.x, 1);
+        assert_eq!(vec3.y, 2);
+        assert_eq!(vec3.z, 3);
     }
 
     #[test]
-    fn add() {
-        let origin = Vector3::from(1, 2, 1);
-        let some_vec = Vector3::from(1, -1, 0);
-        let res_vec = origin + some_vec;
-        assert!(res_vec[0] == 2 && res_vec[1] == 1 && res_vec[2] == 1);
+    fn addition_op() {
+        let vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+        let res1 = vec1 + vec2;
+        assert_eq!(res1.x, 1);
+        assert_eq!(res1.y, 5);
+
+        let vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+        let res2 = vec3 + vec4;
+        assert_eq!(res2.x, 1);
+        assert_eq!(res2.y, 5);
+        assert_eq!(res2.z, 1);
     }
 
     #[test]
-    fn sub() {
-        let origin = Vector3::from(0, 2, 2);
-        let some_vec = Vector3::from(1, -1, -2);
-        let res_vec = origin - some_vec;
-        assert!(res_vec[0] == -1 && res_vec[1] == 3 && res_vec[2] == 4);
+    fn addition_assign_op() {
+        let mut vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+
+        vec1 += vec2;
+        assert_eq!(vec1.x, 1);
+        assert_eq!(vec1.y, 5);
+
+        let mut vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+
+        vec3 += vec4;
+        assert_eq!(vec3.x, 1);
+        assert_eq!(vec3.y, 5);
+        assert_eq!(vec3.z, 1);
     }
 
     #[test]
-    fn div() {
-        let origin = Vector3::from(4.0, 10.0, 20.0);
-        let res = origin / 2.0;
-        assert!(res.x == 2.0 && res.y == 5.0 && res.z == 10.0);
+    fn subtraction_op() {
+        let vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+        let res1 = vec1 - vec2;
+        assert_eq!(res1.x, -1);
+        assert_eq!(res1.y, -1);
+
+        let vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+        let res2 = vec3 - vec4;
+        assert_eq!(res2.x, -1);
+        assert_eq!(res2.y, -1);
+        assert_eq!(res2.z, -1);
     }
 
     #[test]
-    fn scalar_mult() {
-        let origin = Vector3::from(5, 9, 10);
-        let res = origin * 4;
-        assert!(res.x == 20 && res.y == 36 && res.z == 40);
+    fn subtraction_assign_op() {
+        let mut vec1 = Vector2::new(0, 2);
+        let vec2 = Vector2::new(1, 3);
+
+        vec1 -= vec2;
+        assert_eq!(vec1.x, -1);
+        assert_eq!(vec1.y, -1);
+
+        let mut vec3 = Vector3::new(0, 2, 0);
+        let vec4 = Vector3::new(1, 3, 1);
+
+        vec3 -= vec4;
+        assert_eq!(vec3.x, -1);
+        assert_eq!(vec3.y, -1);
+        assert_eq!(vec3.z, -1);
     }
-}
 
-fn abs_vec2<T: Default + std::cmp::PartialOrd>(v: Vector2<T>) -> Vector2<T> {
-    let abs = |x| {
-        if x < 0 {
-            -x
-        } else {
-            x
-        }
-    };
+    #[test]
+    fn scalar_mul() {
+        let vec1 = Vector2::new(1, 1);
+        let res = vec1 * 5;
+        assert_eq!(res.x, 5);
+        assert_eq!(res.y, 5);
 
-    Vector2 {
-        x: abs(v.x),
-        y: abs(v.y),
+        let vec2 = Vector3::new(3, 3, 3);
+        let res2 = vec2 * 5;
+        assert_eq!(res2.x, 15);
+        assert_eq!(res2.y, 15);
+        assert_eq!(res2.z, 15);
+
+        // commutative test
+        let vec3 = Vector3::new(3, 3, 3);
+        let res3 = 5 * vec3;
+        assert_eq!(res3.x, 15);
+        assert_eq!(res3.y, 15);
+        assert_eq!(res3.z, 15);
+
+        let vec4 = Vector2::new(2, 2);
+        let res4 = 4 * vec4;
+        assert_eq!(res4.x, 8);
+        assert_eq!(res4.y, 8);
     }
-}
 
-fn abs_vec3<T: Default + std::cmp::PartialOrd>(v: Vector3<T>) -> Vector3<T> {
-    let abs = |x| {
-        if x < 0 {
-            -x
-        } else {
-            x
-        }
-    };
+    #[test]
+    fn scalar_mul_assign() {
+        let mut vec1 = Vector2::new(1, 1);
 
-    Vector3 {
-        x: abs(v.x),
-        y: abs(v.y),
-        z: abs(v.z),
+        vec1 *= 5;
+        assert_eq!(vec1.x, 5);
+        assert_eq!(vec1.y, 5);
+
+        let mut vec2 = Vector3::new(3, 3, 3);
+
+        vec2 *= 5;
+        assert_eq!(vec2.x, 15);
+        assert_eq!(vec2.y, 15);
+        assert_eq!(vec2.z, 15);
     }
-}
 
-pub fn dot_vec2<T>(v1: Vector2<T>, v2: Vector2<T>) -> T {
-    v1.x * v2.x + v1.y * v2.y
-}
+    #[test]
+    fn scalar_div() {
+        let vec1 = Vector2::new(25, 25);
+        let res = vec1 / 5;
+        assert_eq!(res.x, 5);
+        assert_eq!(res.y, 5);
 
-pub fn dot_vec3<T>(v1: Vector3<T>, v2: Vector3<T>) -> T {
-    v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+        let vec2 = Vector3::new(30, 30, 30);
+        let res2 = vec2 / 2;
+        assert_eq!(res2.x, 15);
+        assert_eq!(res2.y, 15);
+        assert_eq!(res2.z, 15);
+    }
+
+    #[test]
+    fn scalar_div_assign() {
+        let mut vec1 = Vector2::new(25, 25);
+        vec1 /= 5;
+        assert_eq!(vec1.x, 5);
+        assert_eq!(vec1.y, 5);
+
+        let mut vec2 = Vector3::new(30, 30, 30);
+        vec2 /= 2;
+        assert_eq!(vec2.x, 15);
+        assert_eq!(vec2.y, 15);
+        assert_eq!(vec2.z, 15);
+    }
+
+    #[test]
+    fn negation() {
+        let vec1 = Vector2::new(3, 3);
+        let res1 = -vec1;
+        assert_eq!(res1.x, -3);
+        assert_eq!(res1.y, -3);
+
+        let vec2 = Vector3::new(1, 1, 1);
+        let res2 = -vec2;
+        assert_eq!(res2.x, -1);
+        assert_eq!(res2.y, -1);
+        assert_eq!(res2.z, -1);
+    }
+
+    #[test]
+    fn abs() {
+        let vec = Vector2::new(-2, -1);
+        let vec = Vector2::abs(&vec);
+        assert_eq!(vec.x, 2);
+        assert_eq!(vec.y, 1);
+
+        let vec = Vector3::new(-2, -1, -5);
+        let vec = Vector3::abs(&vec);
+        assert_eq!(vec.x, 2);
+        assert_eq!(vec.y, 1);
+        assert_eq!(vec.z, 5);
+    }
 }
