@@ -12,11 +12,23 @@ pub struct Vector2<T> {
     pub y: T,
 }
 
-impl<T> Vector2<T>
-    where T: Mul<Output=T>
-{
-    pub fn cross(&self) -> Vector2<T> {
-        unimplemented!()
+impl Vector2<f32> {
+    pub fn length_squared(&self) -> f32 {
+        self.x * self.x + self.y * self.y
+    }
+
+    pub fn length(&self) -> f32 {
+        self.length_squared().sqrt()
+    }
+}
+
+impl Vector2<i32> {
+    pub fn length_squared(&self) -> i32 {
+        self.x * self.x + self.y * self.y
+    }
+
+    pub fn length(&self) -> f32 {
+        (self.length_squared() as f32).sqrt()
     }
 }
 
@@ -189,6 +201,26 @@ pub struct Vector3<T> {
     pub x: T,
     pub y: T,
     pub z: T,
+}
+
+impl Vector3<f32> {
+    pub fn length_squared(&self) -> f32 {
+        self.x * self.x + self.y * self.y + self.x * self.y
+    }
+
+    pub fn length(&self) -> f32 {
+        self.length_squared().sqrt()
+    }
+}
+
+impl Vector3<i32> {
+    pub fn length_squared(&self) -> i32 {
+        self.x * self.x + self.y * self.y + self.z * self.z
+    }
+
+    pub fn length(&self) -> f32 {
+        (self.length_squared() as f32).sqrt()
+    }
 }
 
 impl<T> Vector3<T>
@@ -596,5 +628,23 @@ mod test_vector_ops {
         let vec2 = Vector3::new(0, 1, 0);
         let perp_vector = Vector3::cross(&vec1, &vec2);
         assert_eq!(perp_vector, Vector3::new(0, 0, 1));
+    }
+
+    #[test]
+    fn length_squared() {
+        let vec = Vector2::new(1, 2);
+        assert_eq!(5, vec.length_squared());
+
+        let vec = Vector3::new(1, 2, 1);
+        assert_eq!(6, vec.length_squared());
+    }
+
+    #[test]
+    fn length() {
+        let vec = Vector2::new(4, 3);
+        assert_eq!(5.0, vec.length());
+
+        let vec = Vector3::new(0, 4, 3);
+        assert_eq!(5.0, vec.length());
     }
 }
