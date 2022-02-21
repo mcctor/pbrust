@@ -1,13 +1,24 @@
 use std::cmp::min;
-use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::{
+    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
+};
 
 pub type Vector2i = Vector2<i32>;
 pub type Vector2f = Vector2<f32>;
 pub type Vector3i = Vector3<i32>;
 pub type Vector3f = Vector3<f32>;
 
-pub trait NumberField<T>: Mul<Output=T> + Add<Output=T> + Sub<Output=T> +
-Default + PartialOrd + Neg<Output=T> + Copy + Clone {}
+pub trait NumberField<T>:
+    Mul<Output = T>
+    + Add<Output = T>
+    + Sub<Output = T>
+    + Default
+    + PartialOrd
+    + Neg<Output = T>
+    + Copy
+    + Clone
+{
+}
 
 impl NumberField<i32> for i32 {}
 
@@ -39,8 +50,7 @@ impl Vector2<i32> {
     }
 }
 
-impl<T> Vector2<T> where T: NumberField<T>
-{
+impl<T: NumberField<T>> Vector2<T> {
     pub fn new(x: T, y: T) -> Self {
         Vector2 { x, y }
     }
@@ -237,8 +247,7 @@ impl Vector3<i32> {
     }
 }
 
-impl<T> Vector3<T> where T: NumberField<T>
-{
+impl<T: NumberField<T>> Vector3<T> {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
     }
@@ -427,12 +436,12 @@ impl<T> IndexMut<usize> for Vector3<T> {
             0 => &mut self.x,
             1 => &mut self.y,
             2 => &mut self.z,
-            _ => panic!("index provided non-existent")
+            _ => panic!("index provided non-existent"),
         }
     }
 }
 
-fn abs_t<T: Default + PartialOrd<T> + Neg<Output=T>>(x: T) -> T {
+fn abs_t<T: NumberField<T>>(x: T) -> T {
     if x < T::default() {
         -x
     } else {
