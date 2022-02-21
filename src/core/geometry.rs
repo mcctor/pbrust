@@ -45,22 +45,22 @@ impl<T> Vector2<T> where T: NumberField<T>
         Vector2 { x, y }
     }
 
-    pub fn abs(vec: &Vector2<T>) -> Vector2<T> {
+    pub fn abs(vec: &Self) -> Self {
         Vector2 {
             x: abs_t(vec.x),
             y: abs_t(vec.y),
         }
     }
 
-    pub fn dot(vec1: &Vector2<T>, vec2: &Vector2<T>) -> T {
+    pub fn dot(vec1: &Self, vec2: &Self) -> T {
         vec1.x * vec2.x + vec1.y * vec2.y
     }
 
-    pub fn abs_dot(vec1: &Vector2<T>, vec2: &Vector2<T>) -> T {
+    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
         abs_t(Vector2::dot(vec1, vec2))
     }
 
-    pub fn min_component(vec: &Vector2<T>) -> T {
+    pub fn min_component(vec: &Self) -> T {
         if vec.x < vec.y {
             vec.x
         } else {
