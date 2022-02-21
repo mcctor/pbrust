@@ -7,21 +7,21 @@ pub type Vector2f = Vector2<f32>;
 pub type Vector3i = Vector3<i32>;
 pub type Vector3f = Vector3<f32>;
 
-pub trait NumberField<T>:
-    Mul<Output = T>
-    + Add<Output = T>
-    + Sub<Output = T>
+pub trait NumberField:
+    Mul<Output = Self>
+    + Add<Output = Self>
+    + Sub<Output = Self>
     + Default
     + PartialOrd
-    + Neg<Output = T>
+    + Neg<Output = Self>
     + Copy
     + Clone
 {
 }
 
-impl NumberField<i32> for i32 {}
+impl NumberField for i32 {}
 
-impl NumberField<f32> for f32 {}
+impl NumberField for f32 {}
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Vector2<T> {
@@ -49,7 +49,7 @@ impl Vector2<i32> {
     }
 }
 
-impl<T: NumberField<T>> Vector2<T> {
+impl<T: NumberField> Vector2<T> {
     pub fn new(x: T, y: T) -> Self {
         Vector2 { x, y }
     }
@@ -116,7 +116,7 @@ impl DivAssign<f32> for Vector2<f32> {
     }
 }
 
-impl<T: NumberField<T>> Add<Vector2<T>> for Vector2<T> {
+impl<T: NumberField> Add<Vector2<T>> for Vector2<T> {
     type Output = Vector2<T>;
 
     fn add(self, rhs: Vector2<T>) -> Self::Output {
@@ -127,14 +127,14 @@ impl<T: NumberField<T>> Add<Vector2<T>> for Vector2<T> {
     }
 }
 
-impl<T: NumberField<T>> AddAssign<Vector2<T>> for Vector2<T> {
+impl<T: NumberField> AddAssign<Vector2<T>> for Vector2<T> {
     fn add_assign(&mut self, rhs: Vector2<T>) {
         self.x = self.x + rhs.x;
         self.y = self.y + rhs.y;
     }
 }
 
-impl<T: NumberField<T>> Sub<Vector2<T>> for Vector2<T> {
+impl<T: NumberField> Sub<Vector2<T>> for Vector2<T> {
     type Output = Vector2<T>;
 
     fn sub(self, rhs: Vector2<T>) -> Self::Output {
@@ -145,14 +145,14 @@ impl<T: NumberField<T>> Sub<Vector2<T>> for Vector2<T> {
     }
 }
 
-impl<T: NumberField<T>> SubAssign<Vector2<T>> for Vector2<T> {
+impl<T: NumberField> SubAssign<Vector2<T>> for Vector2<T> {
     fn sub_assign(&mut self, rhs: Vector2<T>) {
         self.x = self.x - rhs.x;
         self.y = self.y - rhs.y;
     }
 }
 
-impl<T: NumberField<T>> Neg for Vector2<T> {
+impl<T: NumberField> Neg for Vector2<T> {
     type Output = Vector2<T>;
 
     fn neg(self) -> Self::Output {
@@ -163,7 +163,7 @@ impl<T: NumberField<T>> Neg for Vector2<T> {
     }
 }
 
-impl<T: NumberField<T>> Mul<T> for Vector2<T> {
+impl<T: NumberField> Mul<T> for Vector2<T> {
     type Output = Vector2<T>;
 
     fn mul(self, rhs: T) -> Self::Output {
@@ -174,7 +174,7 @@ impl<T: NumberField<T>> Mul<T> for Vector2<T> {
     }
 }
 
-impl<T: NumberField<T>> MulAssign<T> for Vector2<T> {
+impl<T: NumberField> MulAssign<T> for Vector2<T> {
     fn mul_assign(&mut self, rhs: T) {
         self.x = self.x * rhs;
         self.y = self.y * rhs;
@@ -246,7 +246,7 @@ impl Vector3<i32> {
     }
 }
 
-impl<T: NumberField<T>> Vector3<T> {
+impl<T: NumberField> Vector3<T> {
     pub fn new(x: T, y: T, z: T) -> Self {
         Vector3 { x, y, z }
     }
@@ -294,7 +294,7 @@ impl<T: NumberField<T>> Vector3<T> {
     }
 }
 
-impl<T: NumberField<T>> Sub<Vector3<T>> for Vector3<T> {
+impl<T: NumberField> Sub<Vector3<T>> for Vector3<T> {
     type Output = Vector3<T>;
 
     fn sub(self, rhs: Vector3<T>) -> Self::Output {
@@ -306,7 +306,7 @@ impl<T: NumberField<T>> Sub<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: NumberField<T>> SubAssign<Vector3<T>> for Vector3<T> {
+impl<T: NumberField> SubAssign<Vector3<T>> for Vector3<T> {
     fn sub_assign(&mut self, rhs: Vector3<T>) {
         self.x = self.x - rhs.x;
         self.y = self.y - rhs.y;
@@ -314,7 +314,7 @@ impl<T: NumberField<T>> SubAssign<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: NumberField<T>> Add<Vector3<T>> for Vector3<T> {
+impl<T: NumberField> Add<Vector3<T>> for Vector3<T> {
     type Output = Vector3<T>;
 
     fn add(self, rhs: Vector3<T>) -> Self::Output {
@@ -326,7 +326,7 @@ impl<T: NumberField<T>> Add<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: NumberField<T>> AddAssign<Vector3<T>> for Vector3<T> {
+impl<T: NumberField> AddAssign<Vector3<T>> for Vector3<T> {
     fn add_assign(&mut self, rhs: Vector3<T>) {
         self.x = self.x + rhs.x;
         self.y = self.y + rhs.y;
@@ -334,7 +334,7 @@ impl<T: NumberField<T>> AddAssign<Vector3<T>> for Vector3<T> {
     }
 }
 
-impl<T: NumberField<T>> Neg for Vector3<T> {
+impl<T: NumberField> Neg for Vector3<T> {
     type Output = Vector3<T>;
 
     fn neg(self) -> Self::Output {
@@ -380,7 +380,7 @@ impl DivAssign<i32> for Vector3<i32> {
     }
 }
 
-impl<T: NumberField<T>> Mul<T> for Vector3<T> {
+impl<T: NumberField> Mul<T> for Vector3<T> {
     type Output = Vector3<T>;
 
     fn mul(self, rhs: T) -> Self::Output {
@@ -408,7 +408,7 @@ impl Mul<Vector3<f32>> for f32 {
     }
 }
 
-impl<T: NumberField<T>> MulAssign<T> for Vector3<T> {
+impl<T: NumberField> MulAssign<T> for Vector3<T> {
     fn mul_assign(&mut self, rhs: T) {
         self.x = self.x * rhs;
         self.y = self.y * rhs;
@@ -440,7 +440,7 @@ impl<T> IndexMut<usize> for Vector3<T> {
     }
 }
 
-fn abs_t<T: NumberField<T>>(x: T) -> T {
+fn abs_t<T: NumberField>(x: T) -> T {
     if x < T::default() {
         -x
     } else {
