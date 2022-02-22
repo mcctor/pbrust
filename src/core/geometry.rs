@@ -37,6 +37,10 @@ impl Vector2<f32> {
     pub fn length(&self) -> f32 {
         self.length_squared().sqrt()
     }
+
+    pub fn normalize(v: &Self) -> Self {
+        *v / v.length()
+    }
 }
 
 impl Vector2<i32> {
@@ -47,6 +51,10 @@ impl Vector2<i32> {
     pub fn length(&self) -> f32 {
         (self.length_squared() as f32).sqrt()
     }
+
+    pub fn normalize(v: &Self) -> Self {
+        *v / v.length() as i32
+    }
 }
 
 impl<T: NumberField> Vector2<T> {
@@ -54,27 +62,39 @@ impl<T: NumberField> Vector2<T> {
         Vector2 { x, y }
     }
 
-    pub fn abs(vec: &Self) -> Self {
+    pub fn abs(v: &Self) -> Self {
         Vector2 {
-            x: abs_t(vec.x),
-            y: abs_t(vec.y),
+            x: abs_t(v.x),
+            y: abs_t(v.y),
         }
     }
 
-    pub fn dot(vec1: &Self, vec2: &Self) -> T {
-        vec1.x * vec2.x + vec1.y * vec2.y
+    pub fn dot(v1: &Self, v2: &Self) -> T {
+        v1.x * v2.x + v1.y * v2.y
     }
 
-    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
-        abs_t(Vector2::dot(vec1, vec2))
+    pub fn abs_dot(v1: &Self, v2: &Self) -> T {
+        abs_t(Vector2::dot(v1, v2))
     }
 
-    pub fn min_component(vec: &Self) -> T {
-        if vec.x < vec.y {
-            vec.x
+    pub fn min_component(v: &Self) -> T {
+        min_t(v.x, v.y)
+    }
+
+    pub fn max_component(v: &Self) -> T {
+        max_t(v.x, v.y)
+    }
+
+    pub fn max_dimensions(v: &Self) -> usize {
+        if v.x > v.y {
+            0
         } else {
-            vec.y
+            1
         }
+    }
+
+    pub fn permute(v: &Self, x: usize, y: usize) -> Self {
+        Vector2 { x: v[x], y: v[y] }
     }
 }
 
@@ -234,6 +254,10 @@ impl Vector3<f32> {
     pub fn length(&self) -> f32 {
         self.length_squared().sqrt()
     }
+
+    pub fn normalize(v: &Self) -> Self {
+        *v / v.length()
+    }
 }
 
 impl Vector3<i32> {
@@ -244,6 +268,10 @@ impl Vector3<i32> {
     pub fn length(&self) -> f32 {
         (self.length_squared() as f32).sqrt()
     }
+
+    pub fn normalize(v: &Self) -> Self {
+        *v / v.length() as i32
+    }
 }
 
 impl<T: NumberField> Vector3<T> {
@@ -251,21 +279,21 @@ impl<T: NumberField> Vector3<T> {
         Vector3 { x, y, z }
     }
 
-    pub fn abs(vec: &Self) -> Self {
+    pub fn abs(v: &Self) -> Self {
         Vector3 {
-            x: abs_t(vec.x),
-            y: abs_t(vec.y),
-            z: abs_t(vec.z),
+            x: abs_t(v.x),
+            y: abs_t(v.y),
+            z: abs_t(v.z),
         }
     }
 
-    pub fn cross(vec1: &Self, vec2: &Self) -> Self {
-        let v1x = vec1.x;
-        let v1y = vec1.y;
-        let v1z = vec1.z;
-        let v2x = vec2.x;
-        let v2y = vec2.y;
-        let v2z = vec2.z;
+    pub fn cross(v1: &Self, v2: &Self) -> Self {
+        let v1x = v1.x;
+        let v1y = v1.y;
+        let v1z = v1.z;
+        let v2x = v2.x;
+        let v2y = v2.y;
+        let v2z = v2.z;
         Vector3 {
             x: (v1y * v2z) - (v1z * v2y),
             y: (v1z * v2x) - (v1x * v2z),
@@ -273,24 +301,60 @@ impl<T: NumberField> Vector3<T> {
         }
     }
 
-    pub fn dot(vec1: &Self, vec2: &Self) -> T {
-        vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z
+    pub fn dot(v1: &Self, v2: &Self) -> T {
+        v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
     }
 
-    pub fn abs_dot(vec1: &Self, vec2: &Self) -> T {
-        abs_t(Vector3::dot(vec1, vec2))
+    pub fn abs_dot(v1: &Self, v2: &Self) -> T {
+        abs_t(Vector3::dot(v1, v2))
     }
 
     pub fn min_component(&self) -> T {
-        let min = |x, y| {
-            if x < y {
-                x
-            } else {
-                y
-            }
-        };
+        min_t(self.x, min_t(self.y, self.z))
+    }
 
-        min(self.x, min(self.y, self.z))
+    pub fn max_component(&self) -> T {
+        max_t(self.x, max_t(self.y, self.z))
+    }
+
+    pub fn max_dimensions(v: &Self) -> usize {
+        if v.x > v.y {
+            if v.x > v.z {
+                0
+            } else {
+                2
+            }
+        } else {
+            if v.y > v.z {
+                1
+            } else {
+                2
+            }
+        }
+    }
+
+    pub fn min(v1: &Self, v2: &Self) -> Self {
+        Vector3 {
+            x: min_t(v1.x, v2.x),
+            y: min_t(v1.y, v2.y),
+            z: min_t(v1.z, v2.z),
+        }
+    }
+
+    pub fn max(v1: &Self, v2: &Self) -> Self {
+        Vector3 {
+            x: max_t(v1.x, v2.x),
+            y: max_t(v1.y, v2.y),
+            z: max_t(v1.z, v2.z),
+        }
+    }
+
+    pub fn permute(v: &Self, x: usize, y: usize, z: usize) -> Self {
+        Vector3 {
+            x: v[x],
+            y: v[y],
+            z: v[z],
+        }
     }
 }
 
@@ -445,6 +509,22 @@ fn abs_t<T: NumberField>(x: T) -> T {
         -x
     } else {
         x
+    }
+}
+
+fn min_t<T: NumberField>(x: T, y: T) -> T {
+    if x < y {
+        x
+    } else {
+        y
+    }
+}
+
+fn max_t<T: NumberField>(x: T, y: T) -> T {
+    if x > y {
+        x
+    } else {
+        y
     }
 }
 
