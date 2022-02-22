@@ -309,12 +309,12 @@ impl<T: NumberField> Vector3<T> {
         abs_t(Vector3::dot(v1, v2))
     }
 
-    pub fn min_component(&self) -> T {
-        min_t(self.x, min_t(self.y, self.z))
+    pub fn min_component(v: &Self) -> T {
+        min_t(v.x, min_t(v.y, v.z))
     }
 
-    pub fn max_component(&self) -> T {
-        max_t(self.x, max_t(self.y, self.z))
+    pub fn max_component(v: &Self) -> T {
+        max_t(v.x, max_t(v.y, v.z))
     }
 
     pub fn max_dimensions(v: &Self) -> usize {
