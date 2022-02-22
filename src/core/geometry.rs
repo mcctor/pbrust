@@ -258,6 +258,19 @@ impl Vector3<f32> {
     pub fn normalize(v: &Self) -> Self {
         *v / v.length()
     }
+
+    pub fn coordinate_system(from: &Self) -> (Self, Self) {
+        let v1 = {
+            if abs_t(from.x) > abs_t(from.y) {
+                Vector3::new(-from.z, 0.0, from.x) /
+                    ((from.x * from.x + from.z * from.z) as f32).sqrt()
+            } else {
+                Vector3::new(0.0, from.z, -from.y) /
+                    ((from.y * from.y + from.z * from.z) as f32).sqrt()
+            }
+        };
+        (v1, Vector3::cross(from, &v1))
+    }
 }
 
 impl Vector3<i32> {
@@ -271,6 +284,19 @@ impl Vector3<i32> {
 
     pub fn normalize(v: &Self) -> Self {
         *v / v.length() as i32
+    }
+
+    pub fn coordinate_system(from: &Self) -> (Self, Self) {
+        let v1 = {
+            if abs_t(from.x) > abs_t(from.y) {
+                Vector3::new(-from.z, 0, from.x) /
+                    ((from.x * from.x + from.z * from.z) as f32).sqrt() as i32
+            } else {
+                Vector3::new(0, from.z, -from.y) /
+                    ((from.y * from.y + from.z * from.z) as f32).sqrt() as i32
+            }
+        };
+        (v1, Vector3::cross(from, &v1))
     }
 }
 
